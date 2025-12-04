@@ -74,11 +74,11 @@ public class Board {
     @Override
     public String toString() {
         String str = "";
-        str += m_board[0] + "|" + m_board[1] + "|" + m_board[2];
-        str += "-----";
-        str += m_board[3] + "|" + m_board[4] + "|" + m_board[5];
-        str += "-----";
-        str += m_board[6] + "|" + m_board[7] + "|" + m_board[8];
+        str += m_board[0] + "|" + m_board[1] + "|" + m_board[2] + "\n";
+        str += "-----" + "\n";
+        str += m_board[3] + "|" + m_board[4] + "|" + m_board[5] + "\n";
+        str += "-----" + "\n";
+        str += m_board[6] + "|" + m_board[7] + "|" + m_board[8] + "\n";
         return str;
     }
     public boolean is_turn(boolean move_first) {

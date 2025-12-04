@@ -11,8 +11,9 @@ public class ClientHandler extends Thread {
     DataOutputStream m_output_stream;
     DataInputStream m_input_stream;
     boolean m_move_first;
-    public ClientHandler(Socket p_socket, boolean p_go_first) throws Exception {
+    public ClientHandler(Socket p_socket, Board p_board, boolean p_go_first) throws Exception {
         m_socket = p_socket;
+        m_board = p_board;
         m_move_first = p_go_first;
         m_output_stream = new DataOutputStream(m_socket.getOutputStream());
         m_input_stream = new DataInputStream(m_socket.getInputStream());
@@ -22,6 +23,7 @@ public class ClientHandler extends Thread {
 
     @Override
     public void run() {
+        System.out.println("ThreadStarting");
         try {
         while (!m_socket.isClosed()) {
             int p = m_input_stream.readInt();
@@ -46,6 +48,7 @@ public class ClientHandler extends Thread {
         } catch (Exception e){
             System.out.println("Thead Terminating Due To Error"+e);
         }
+        System.out.println("Client Safely Disconnected");
         
     }
 }
