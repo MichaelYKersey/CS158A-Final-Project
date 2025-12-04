@@ -1,0 +1,35 @@
+package scr;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+
+public class BoardClient {
+    Socket m_socket;
+    DataOutputStream m_output_stream;
+    DataInputStream m_input_stream;
+    boolean m_move_first;
+
+    public BoardClient(Socket p_socket) throws Exception{
+        m_socket = p_socket;
+        m_output_stream = new DataOutputStream(m_socket.getOutputStream());
+        m_input_stream = new DataInputStream(m_socket.getInputStream());
+    }
+    /**
+     * @return if the server accepted the move
+     */
+    public boolean make_move(int index) throws Exception {
+        m_output_stream.writeInt(TCPPrefixes.SEND_MOVE.ordinal());
+        m_output_stream.writeByte(index);
+        if (m_input_stream.readInt() != TCPPrefixes.SEND_MOVE_REPLY.ordinal()) throw new IOException();
+        return m_input_stream.readBoolean();
+    }
+    public Board get_board() throws Exception {
+        m_output_stream.writeInt(TCPPrefixes.GET_BOARD.ordinal());
+        if (m_input_stream.readInt() != TCPPrefixes.GET_BOARD_REPLY.ordinal()) throw new IOException();
+        byte[] raw_board = new byte[Board.RAW_SIZE];
+        m_input_stream.readFully(raw_board);
+        return new Board(raw_board);
+    }
+}

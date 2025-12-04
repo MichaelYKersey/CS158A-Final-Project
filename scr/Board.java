@@ -2,20 +2,24 @@ package scr;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.zip.DataFormatException;
 
 public class Board {
+    public static final int RAW_SIZE = 11;
     private char[] m_board = ".".repeat(9).toCharArray(); 
     private byte m_turns = 0;
     private char m_winner = '.';
     int players = 0;
     
     public Board() {};
-    public Board(char[] p_board, byte p_turns, char p_winner) {
+    public Board(char[] p_board, byte p_turns, char p_winner)  throws Exception {
+        if (m_board.length != 9) throw new DataFormatException();
         m_board = p_board;
         m_turns = p_turns;
         m_winner = p_winner;
     }
-    public Board(byte[] raw) {
+    public Board(byte[] raw) throws Exception {
+        if (raw.length != RAW_SIZE) throw new DataFormatException();
         char[] board = new char[9];
         for (int i=0; i<board.length; i++) {
             board[i] = (char) raw[i];
@@ -23,7 +27,7 @@ public class Board {
         this(board,raw[9],(char)raw[10]);
     }
     public byte[] getAsRaw() {
-        byte[] raw = new byte[11];
+        byte[] raw = new byte[RAW_SIZE];
         for (int i=0; i<m_board.length; i++) {
             raw[i] = (byte) raw[i];
         }
@@ -34,18 +38,18 @@ public class Board {
 
     /**
      * @param index index to place turn at
-     * @return if game is over
+     * @return if move was successful
      */
     public boolean place(byte index) {
         if (m_winner != '.') {
             System.err.println("game over can't place");
         }
         if (m_board[index] != '.' || index >= m_board.length) {
-            throw new IllegalArgumentException();
+            return false;
         }
         m_board[index] = (m_turns%2 == 0 ? 'X' : 'O');
         m_turns++;
-        return updateWinner() != '.';
+        return true;
     }
     /**
      * @return winner (T=tie,.=TBD)
