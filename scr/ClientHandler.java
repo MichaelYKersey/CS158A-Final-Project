@@ -34,6 +34,8 @@ public class ClientHandler extends Thread {
                 m_output_stream.writeInt(TCPPrefixes.SEND_MOVE_REPLY.ordinal());
                 m_output_stream.writeBoolean(successful);
             } else if (p == TCPPrefixes.CLOSE_CONNECTION.ordinal()) {
+                m_output_stream.close();
+                m_input_stream.close();
                 m_socket.close();
             } else {
                 throw new InvalidKeyException();

@@ -32,4 +32,10 @@ public class BoardClient {
         m_input_stream.readFully(raw_board);
         return new Board(raw_board);
     }
+    public void close() throws Exception {
+        m_output_stream.writeInt(TCPPrefixes.CLOSE_CONNECTION.ordinal());
+        m_output_stream.close();
+        m_input_stream.close();
+        m_socket.close();
+    }
 }
