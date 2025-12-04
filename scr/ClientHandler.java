@@ -32,7 +32,7 @@ public class ClientHandler extends Thread {
                 m_output_stream.write(m_board.getAsRaw());
             } else if (p == TCPPrefixes.SEND_MOVE.ordinal()) {
                 boolean successful = false;
-                if (m_board.is_turn(m_move_first)) {
+                if (m_board.isTurn(m_move_first)) {
                     successful = m_board.place(m_input_stream.readByte());
                 }
                 m_output_stream.writeInt(TCPPrefixes.SEND_MOVE_REPLY.ordinal());

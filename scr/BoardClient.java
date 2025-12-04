@@ -21,13 +21,13 @@ public class BoardClient {
     /**
      * @return if the server accepted the move
      */
-    public boolean make_move(int index) throws Exception {
+    public boolean makeMove(int index) throws Exception {
         m_output_stream.writeInt(TCPPrefixes.SEND_MOVE.ordinal());
         m_output_stream.writeByte(index);
         if (m_input_stream.readInt() != TCPPrefixes.SEND_MOVE_REPLY.ordinal()) throw new IOException();
         return m_input_stream.readBoolean();
     }
-    public Board get_board() throws Exception {
+    public Board getBoard() throws Exception {
         m_output_stream.writeInt(TCPPrefixes.GET_BOARD.ordinal());
         if (m_input_stream.readInt() != TCPPrefixes.GET_BOARD_REPLY.ordinal()) throw new IOException();
         byte[] raw_board = new byte[Board.RAW_SIZE];

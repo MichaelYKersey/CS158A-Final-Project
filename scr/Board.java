@@ -81,7 +81,7 @@ public class Board {
         str += m_board[6] + "|" + m_board[7] + "|" + m_board[8] + "\n";
         return str;
     }
-    public boolean is_turn(boolean move_first) {
+    public boolean isTurn(boolean move_first) {
         if (m_turns >= 9) return false;
         return m_turns%2 == (move_first ? 0 : 1);
     }
