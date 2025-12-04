@@ -15,6 +15,8 @@ public class BoardClient {
         m_socket = p_socket;
         m_output_stream = new DataOutputStream(m_socket.getOutputStream());
         m_input_stream = new DataInputStream(m_socket.getInputStream());
+        if (m_input_stream.readInt() != TCPPrefixes.ASSIGN_ORDER.ordinal()) throw new IOException();
+        m_move_first = m_input_stream.readBoolean();
     }
     /**
      * @return if the server accepted the move

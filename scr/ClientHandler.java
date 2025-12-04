@@ -16,6 +16,8 @@ public class ClientHandler extends Thread {
         m_move_first = p_go_first;
         m_output_stream = new DataOutputStream(m_socket.getOutputStream());
         m_input_stream = new DataInputStream(m_socket.getInputStream());
+        m_output_stream.writeInt(TCPPrefixes.ASSIGN_ORDER.ordinal());
+        m_output_stream.writeBoolean(m_move_first);
     }
 
     @Override
