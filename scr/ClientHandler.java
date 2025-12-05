@@ -26,29 +26,39 @@ public class ClientHandler extends Thread {
         System.out.println("ThreadStarting");
         try {
         while (!m_socket.isClosed()) {
+            System.out.println("Wait for prefix");
             int p = m_input_stream.readInt();
+            System.out.println("Receive Prefix:"+p);
             if (p == TCPPrefixes.GET_BOARD.ordinal()) {
+                System.out.println("Get Board");
                 m_output_stream.writeInt(TCPPrefixes.GET_BOARD_REPLY.ordinal());
+                // System.out.println("Wrote Prefix");
                 m_output_stream.write(m_board.getAsRaw());
+                // System.out.println("Wrote SentBoard");
             } else if (p == TCPPrefixes.SEND_MOVE.ordinal()) {
+                System.out.println("Send Move");
+                byte move_request = m_input_stream.readByte();
                 boolean successful = false;
-                if (m_board.isTurn(m_move_first)) {
-                    successful = m_board.place(m_input_stream.readByte());
-                }
+                // if (m_board.isTurn(m_move_first)) {
+                    successful = m_board.place(move_request);
+                // }
                 m_output_stream.writeInt(TCPPrefixes.SEND_MOVE_REPLY.ordinal());
                 m_output_stream.writeBoolean(successful);
             } else if (p == TCPPrefixes.CLOSE_CONNECTION.ordinal()) {
+                System.out.println("Close Connection");
                 m_output_stream.close();
                 m_input_stream.close();
                 m_socket.close();
             } else {
-                throw new InvalidKeyException();
+                System.out.println("Invalid TCP Prefix");
+                throw new InvalidKeyException(""+p);
             }
-        }
-        } catch (Exception e){
-            System.out.println("Thead Terminating Due To Error"+e);
+            System.out.print(m_board);
         }
         System.out.println("Client Safely Disconnected");
+        } catch (Exception e){
+            System.out.println("Thead Terminating Due To Error:\n"+e+"\n"+e.getMessage());
+        }
         
     }
 }

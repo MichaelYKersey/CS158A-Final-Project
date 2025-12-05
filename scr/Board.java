@@ -41,24 +41,28 @@ public class Board {
      * @return if move was successful
      */
     public boolean place(byte index) {
+        System.out.println("atempt to place at:"+index);
         if (m_winner != '.') {
             System.err.println("game over can't place");
+            return false;
         }
         if (m_board[index] != '.' || index >= m_board.length) {
             return false;
         }
         m_board[index] = (m_turns%2 == 0 ? 'X' : 'O');
         m_turns++;
+        updateWinner();
         return true;
     }
     /**
      * @return winner (T=tie,.=TBD)
      */
-    public char updateWinner() {
+    public char getWinner() {return m_winner;}
+    private char updateWinner() {
         m_winner = calcWinner();
         return m_winner;
     }
-    public char calcWinner() {
+    private char calcWinner() {
         for (int i=0; i<3; i++) {
             //check row
             if (m_board[i*3] == m_board[i*3+1] && m_board[i*3] == m_board[i*3+2]) return m_board[i];

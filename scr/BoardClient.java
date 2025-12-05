@@ -33,6 +33,7 @@ public class BoardClient {
         byte[] raw_board = new byte[Board.RAW_SIZE];
         m_input_stream.readFully(raw_board);
         return new Board(raw_board);
+        // return new Board();
     }
     public void close() throws Exception {
         m_output_stream.writeInt(TCPPrefixes.CLOSE_CONNECTION.ordinal());
