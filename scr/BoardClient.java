@@ -22,6 +22,7 @@ public class BoardClient {
      * @return if the server accepted the move
      */
     public boolean makeMove(int index) throws Exception {
+        if (index < 0 || index > 8) return false;
         m_output_stream.writeInt(TCPPrefixes.SEND_MOVE.ordinal());
         m_output_stream.writeByte(index);
         if (m_input_stream.readInt() != TCPPrefixes.SEND_MOVE_REPLY.ordinal()) throw new IOException();

@@ -9,7 +9,6 @@ public class Board {
     private char[] m_board = ".".repeat(9).toCharArray(); 
     private byte m_turns = 0;
     private char m_winner = '.';
-    int players = 0;
     
     public Board() {};
     public Board(char[] p_board, byte p_turns, char p_winner)  throws Exception {
@@ -50,8 +49,8 @@ public class Board {
             return false;
         }
         m_board[index] = (m_turns%2 == 0 ? 'X' : 'O');
-        m_turns++;
         updateWinner();
+        m_turns++;
         return true;
     }
     /**
@@ -65,13 +64,13 @@ public class Board {
     private char calcWinner() {
         for (int i=0; i<3; i++) {
             //check row
-            if (m_board[i*3] != '.' && m_board[i*3] == m_board[i*3+1] && m_board[i*3] == m_board[i*3+2]) return m_board[i];
+            if (m_board[i*3] != '.' && m_board[i*3] == m_board[i*3+1] && m_board[i*3] == m_board[i*3+2]) return m_board[i*3];
             //check col
             if (m_board[i] != '.' && m_board[i] == m_board[i+3] && m_board[i] == m_board[i+6]) return m_board[i];
         }
         //check diagonals
-        if (m_board[4] != '.' && m_board[0] == m_board[4] && m_board[0] == m_board[8]) return m_board[0];
-        if (m_board[4] != '.' && m_board[2] == m_board[4] && m_board[2] == m_board[6]) return m_board[2];
+        if (m_board[4] != '.' && m_board[4] == m_board[0] && m_board[4] == m_board[8]) return m_board[4];
+        if (m_board[4] != '.' && m_board[4] == m_board[2] && m_board[4] == m_board[6]) return m_board[4];
         if (m_turns >= 9) return 'T';
         return '.';
     }

@@ -27,7 +27,7 @@ public class ClientHandler extends Thread {
         System.out.println("ThreadStarting");
         try {
         while (!m_socket.isClosed()) {
-            System.out.println("Wait for prefix");
+            System.out.println("Wait for prefix (first:"+m_move_first+")");
             int p = m_input_stream.readInt();
             System.out.println("Receive Prefix:"+p);
             if (p == TCPPrefixes.GET_BOARD.ordinal()) {
@@ -51,10 +51,10 @@ public class ClientHandler extends Thread {
                 m_input_stream.close();
                 m_socket.close();
             } else if (p == TCPPrefixes.WAIT_FOR_OPPONENT.ordinal()) {
-                System.out.println("Waiting for opponent");
-                while (!m_board.isTurn(m_move_first)) {
-                    wait(100);
-                    System.out.println("waitting for oppenten (first:"+m_move_first+")");
+                System.out.println("Wait command");
+                System.out.println("waiting for opponent (first:"+m_move_first+")");
+                while (!m_board.isTurn(m_move_first) && m_board.getWinner() == '.') {
+                    sleep(100);
                 }
                 m_output_stream.writeInt(TCPPrefixes.WAIT_FOR_OPPONENT_REPLY.ordinal());
             } else {
@@ -62,11 +62,12 @@ public class ClientHandler extends Thread {
                 throw new InvalidKeyException(""+p);
             }
             System.out.print(m_board);
+            System.out.println("fin_process command (first:"+m_move_first+")");
         }
-        System.out.println("Client Safely Disconnected");
+        System.out.println("Safely Disconnected from Client");
         } catch (Exception e){
-            System.out.println("Thead Terminating Due To Error:\n"+e+"\n"+e.getMessage());
+            System.out.println("Thead Terminating Due To Error:\n"+e+"\n"+e.getMessage()+"\n");
+            e.printStackTrace();
         }
-        
     }
 }
