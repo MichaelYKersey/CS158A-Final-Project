@@ -5,10 +5,11 @@ import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
 public class Board {
-    public static final int RAW_SIZE = 11;
+    public static final int RAW_SIZE = 12;
     private char[] m_board = ".".repeat(9).toCharArray(); 
     private byte m_turns = 0;
     private char m_winner = '.';
+    private byte m_playersConnected = 0;
     
     public Board() {};
     public Board(char[] p_board, byte p_turns, char p_winner)  throws Exception {
@@ -24,6 +25,7 @@ public class Board {
         }
         m_turns = raw[9];
         m_winner = (char) raw[10];
+        m_playersConnected = raw[11];
     }
     public byte[] getAsRaw() {
         byte[] raw = new byte[RAW_SIZE];
@@ -32,6 +34,7 @@ public class Board {
         }
         raw[9] = m_turns;
         raw[10] = (byte) m_winner;
+        raw[11] = m_playersConnected;
         return raw;
     }
 
@@ -87,5 +90,9 @@ public class Board {
     public boolean isTurn(boolean move_first) {
         if (m_turns >= 9) return false;
         return m_turns%2 == (move_first ? 0 : 1);
+    }
+    public synchronized byte updateConnected(int addend) {
+        m_playersConnected += addend;
+        return m_playersConnected;
     }
 }

@@ -11,9 +11,12 @@ public class Client {
         System.out.println("Connected to server");
         BoardClient bc = new BoardClient(socket);
         System.out.println("You go first:" + bc.movesFirst());
+        System.out.println("Waiting for opponent");
         if (!bc.movesFirst()) {
-            System.out.println("Waiting for opponent");
-            bc.waitForOpponent();
+            bc.waitForOpponentMove();
+        } else {
+            bc.waitForOpponentConnect();
+            System.out.println("Opponent Connected");
         }
         System.out.println(bc.getBoard());
         while (!socket.isClosed()) {
@@ -31,8 +34,14 @@ public class Client {
                 break;
             }
             System.out.println("Waiting for opponent");
-            bc.waitForOpponent();
-            System.out.println(bc.getBoard());
+            bc.waitForOpponentMove();
+            Board b = bc.getBoard();
+            if (b.updateConnected(0) != 2) {
+                System.out.println("Opponent Disconnected");
+                bc.close();
+                break;
+            }
+            System.out.println(b);
         }
         System.out.println("Safely Disconnected from server");
     }

@@ -15,10 +15,8 @@ public class Server {
         while (true) {
             Socket socket = ss.accept();
             System.out.println("Client connected");
-            new ClientHandler(socket,room, order == 0).start();
-            order++;
-            if (order >= 2) {
-                order = 0;
+            new ClientHandler(socket,room).start();
+            if (room.updateConnected(0) == 2) {
                 room = new Board();
             }
         }

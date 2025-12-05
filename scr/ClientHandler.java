@@ -12,10 +12,10 @@ public class ClientHandler extends Thread {
     DataInputStream m_input_stream;
     boolean m_move_first;
     
-    public ClientHandler(Socket p_socket, Board p_board, boolean p_move_first) throws Exception {
+    public ClientHandler(Socket p_socket, Board p_board) throws Exception {
         m_socket = p_socket;
         m_board = p_board;
-        m_move_first = p_move_first;
+        m_move_first = m_board.updateConnected(1) == 1;
         m_output_stream = new DataOutputStream(m_socket.getOutputStream());
         m_input_stream = new DataInputStream(m_socket.getInputStream());
         m_output_stream.writeInt(TCPPrefixes.ASSIGN_ORDER.ordinal());
@@ -50,13 +50,22 @@ public class ClientHandler extends Thread {
                 m_output_stream.close();
                 m_input_stream.close();
                 m_socket.close();
-            } else if (p == TCPPrefixes.WAIT_FOR_OPPONENT.ordinal()) {
+            } else if (p == TCPPrefixes.WAIT_FOR_OPPONENT_MOVE.ordinal()) {
                 System.out.println("Wait command");
                 System.out.println("waiting for opponent (first:"+m_move_first+")");
-                while (!m_board.isTurn(m_move_first) && m_board.getWinner() == '.') {
+                while (m_board.updateConnected(0) == 2 &&
+                    (!m_board.isTurn(m_move_first) && 
+                    m_board.getWinner() == '.')) 
+                {
                     sleep(100);
                 }
-                m_output_stream.writeInt(TCPPrefixes.WAIT_FOR_OPPONENT_REPLY.ordinal());
+                m_output_stream.writeInt(TCPPrefixes.WAIT_FOR_OPPONENT_MOVE_REPLY.ordinal());
+            } else if (p == TCPPrefixes.WAIT_FOR_OPPONENT_CONNECT.ordinal()) {
+                System.out.println("waiting for opponent to connect");
+                while (m_board.updateConnected(0) != 2) {
+                    sleep(100);
+                }
+                m_output_stream.writeInt(TCPPrefixes.WAIT_FOR_OPPONENT_CONNECT_REPLY.ordinal());
             } else {
                 System.out.println("Invalid TCP Prefix");
                 throw new InvalidKeyException(""+p);
@@ -65,9 +74,12 @@ public class ClientHandler extends Thread {
             System.out.println("fin_process command (first:"+m_move_first+")");
         }
         System.out.println("Safely Disconnected from Client");
-        } catch (Exception e){
+    } catch (Exception e){
             System.out.println("Thead Terminating Due To Error:\n"+e+"\n"+e.getMessage()+"\n");
             e.printStackTrace();
+        } finally {
+            m_board.updateConnected(-1);
         }
+        System.out.println("Client Handler finished");
     }
 }
