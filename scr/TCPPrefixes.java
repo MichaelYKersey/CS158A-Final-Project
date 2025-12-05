@@ -7,4 +7,6 @@ public enum TCPPrefixes {
     SEND_MOVE,
     SEND_MOVE_REPLY,
     CLOSE_CONNECTION,
+    WAIT_FOR_OPPONENT,
+    WAIT_FOR_OPPONENT_REPLY
 }

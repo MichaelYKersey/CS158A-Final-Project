@@ -11,10 +11,11 @@ public class ClientHandler extends Thread {
     DataOutputStream m_output_stream;
     DataInputStream m_input_stream;
     boolean m_move_first;
-    public ClientHandler(Socket p_socket, Board p_board, boolean p_go_first) throws Exception {
+    
+    public ClientHandler(Socket p_socket, Board p_board, boolean p_move_first) throws Exception {
         m_socket = p_socket;
         m_board = p_board;
-        m_move_first = p_go_first;
+        m_move_first = p_move_first;
         m_output_stream = new DataOutputStream(m_socket.getOutputStream());
         m_input_stream = new DataInputStream(m_socket.getInputStream());
         m_output_stream.writeInt(TCPPrefixes.ASSIGN_ORDER.ordinal());
@@ -39,9 +40,9 @@ public class ClientHandler extends Thread {
                 System.out.println("Send Move");
                 byte move_request = m_input_stream.readByte();
                 boolean successful = false;
-                // if (m_board.isTurn(m_move_first)) {
+                if (m_board.isTurn(m_move_first)) {
                     successful = m_board.place(move_request);
-                // }
+                }
                 m_output_stream.writeInt(TCPPrefixes.SEND_MOVE_REPLY.ordinal());
                 m_output_stream.writeBoolean(successful);
             } else if (p == TCPPrefixes.CLOSE_CONNECTION.ordinal()) {
@@ -49,6 +50,13 @@ public class ClientHandler extends Thread {
                 m_output_stream.close();
                 m_input_stream.close();
                 m_socket.close();
+            } else if (p == TCPPrefixes.WAIT_FOR_OPPONENT.ordinal()) {
+                System.out.println("Waiting for opponent");
+                while (!m_board.isTurn(m_move_first)) {
+                    wait(100);
+                    System.out.println("waitting for oppenten (first:"+m_move_first+")");
+                }
+                m_output_stream.writeInt(TCPPrefixes.WAIT_FOR_OPPONENT_REPLY.ordinal());
             } else {
                 System.out.println("Invalid TCP Prefix");
                 throw new InvalidKeyException(""+p);

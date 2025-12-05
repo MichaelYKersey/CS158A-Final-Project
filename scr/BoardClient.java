@@ -35,10 +35,17 @@ public class BoardClient {
         return new Board(raw_board);
         // return new Board();
     }
+    public void waitForOpponent() throws Exception{
+        m_output_stream.writeInt(TCPPrefixes.WAIT_FOR_OPPONENT.ordinal());
+        if (m_input_stream.readInt() != TCPPrefixes.WAIT_FOR_OPPONENT_REPLY.ordinal()) throw new IOException();
+    }
     public void close() throws Exception {
         m_output_stream.writeInt(TCPPrefixes.CLOSE_CONNECTION.ordinal());
         m_output_stream.close();
         m_input_stream.close();
         m_socket.close();
+    }
+    public boolean movesFirst() {
+        return m_move_first;
     }
 }
