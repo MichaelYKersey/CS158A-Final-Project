@@ -9,15 +9,17 @@ public class Client {
         Socket socket = new Socket("localhost", Server.PORT);
         System.out.println("Connected to server");
         BoardClient bc = new BoardClient(socket);
-        // System.out.println(bc.getBoard());
+        System.out.println(bc.getBoard());
         while (!socket.isClosed()) {
-            // sc.nextLine();
             if (! bc.makeMove(sc.nextInt())) {
                 System.out.println("Server Refused Move");
             } else {
                 System.out.println(bc.getBoard());
             }
-            // if (bc.getBoard().getWinner() != '.') bc.close();
+            if (bc.getBoard().getWinner() != '.') {
+                System.out.print(bc.getBoard().getWinner());
+                bc.close();
+            }
         }
         System.out.println("Safely Disconnected from server");
     }
