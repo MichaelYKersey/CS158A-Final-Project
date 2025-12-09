@@ -20,6 +20,12 @@ public class Client {
         }
         System.out.println(bc.getBoard());
         while (!socket.isClosed()) {
+            Board b = bc.getBoard();
+            if (b.updateConnected(0) != 2) {
+                System.out.println("Opponent Disconnected");
+                bc.close();
+                break;
+            }
             System.out.println("Your Turn, enter position index:");
             while (!bc.makeMove(sc.nextInt()-1)) {
                 System.out.println("Server Refused Move");
@@ -35,7 +41,7 @@ public class Client {
                 bc.close();
                 break;
             }
-            Board b = bc.getBoard();
+            b = bc.getBoard();
             System.out.println(b);
             if (b.updateConnected(0) != 2) {
                 System.out.println("Opponent Disconnected");
