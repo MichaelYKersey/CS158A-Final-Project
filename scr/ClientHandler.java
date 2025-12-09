@@ -74,7 +74,7 @@ public class ClientHandler extends Thread {
             System.out.println("fin_process command (first:"+m_move_first+")");
         }
         System.out.println("Safely Disconnected from Client");
-    } catch (Exception e){
+        } catch (Exception e){
             System.out.println("Thead Terminating Due To Error:\n"+e+"\n"+e.getMessage()+"\n");
             e.printStackTrace();
         } finally {

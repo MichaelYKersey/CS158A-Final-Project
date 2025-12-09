@@ -91,6 +91,7 @@ public class Board {
         if (m_turns >= 9) return false;
         return m_turns%2 == (move_first ? 0 : 1);
     }
+    public byte getTurn() {return m_turns;}
     public synchronized byte updateConnected(int addend) {
         m_playersConnected += addend;
         return m_playersConnected;

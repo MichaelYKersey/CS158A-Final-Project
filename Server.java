@@ -11,12 +11,11 @@ public class Server {
     public static void main(String[] args) throws Exception {
         ServerSocket ss = new ServerSocket(PORT);
         Board room = new Board();
-        int order = 0;
         while (true) {
             Socket socket = ss.accept();
             System.out.println("Client connected");
             new ClientHandler(socket,room).start();
-            if (room.updateConnected(0) == 2) {
+            if (room.updateConnected(0) == 2 || room.getTurn() != 0) {
                 room = new Board();
             }
         }
