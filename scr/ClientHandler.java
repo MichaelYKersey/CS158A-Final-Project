@@ -57,8 +57,10 @@ public class ClientHandler extends Thread {
                     (!m_board.isTurn(m_move_first) && 
                     m_board.getWinner() == '.')) 
                 {
+                    System.out.println(m_board.getWinner() == '.');
                     sleep(100);
                 }
+                System.out.println("Finsihed waitning");
                 m_output_stream.writeInt(TCPPrefixes.WAIT_FOR_OPPONENT_MOVE_REPLY.ordinal());
             } else if (p == TCPPrefixes.WAIT_FOR_OPPONENT_CONNECT.ordinal()) {
                 System.out.println("waiting for opponent to connect");

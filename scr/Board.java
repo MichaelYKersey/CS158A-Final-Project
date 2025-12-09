@@ -27,7 +27,7 @@ public class Board {
         m_winner = (char) raw[10];
         m_playersConnected = raw[11];
     }
-    public byte[] getAsRaw() {
+    public synchronized byte[] getAsRaw() {
         byte[] raw = new byte[RAW_SIZE];
         for (int i=0; i<m_board.length; i++) {
             raw[i] = (byte) m_board[i];
@@ -42,7 +42,7 @@ public class Board {
      * @param index index to place turn at
      * @return if move was successful
      */
-    public boolean place(byte index) {
+    public synchronized boolean place(byte index) {
         System.out.println("attempt to place at:"+index);
         if (m_winner != '.') {
             System.err.println("game over can't place");
@@ -52,19 +52,19 @@ public class Board {
             return false;
         }
         m_board[index] = (m_turns%2 == 0 ? 'X' : 'O');
-        updateWinner();
         m_turns++;
+        updateWinner();
         return true;
     }
     /**
      * @return winner (T=tie,.=TBD)
      */
-    public char getWinner() {return m_winner;}
-    private char updateWinner() {
+    public synchronized char getWinner() {return m_winner;}
+    private synchronized char updateWinner() {
         m_winner = calcWinner();
         return m_winner;
     }
-    private char calcWinner() {
+    private synchronized char calcWinner() {
         for (int i=0; i<3; i++) {
             //check row
             if (m_board[i*3] != '.' && m_board[i*3] == m_board[i*3+1] && m_board[i*3] == m_board[i*3+2]) return m_board[i*3];
@@ -78,7 +78,7 @@ public class Board {
         return '.';
     }
     @Override
-    public String toString() {
+    public synchronized String toString() {
         String str = "";
         str += m_board[0] + "|" + m_board[1] + "|" + m_board[2] + "\n";
         str += "-----" + "\n";
@@ -87,11 +87,11 @@ public class Board {
         str += m_board[6] + "|" + m_board[7] + "|" + m_board[8] + "\n";
         return str;
     }
-    public boolean isTurn(boolean move_first) {
+    public synchronized boolean isTurn(boolean move_first) {
         if (m_turns >= 9) return false;
         return m_turns%2 == (move_first ? 0 : 1);
     }
-    public byte getTurn() {return m_turns;}
+    public synchronized  byte getTurn() {return m_turns;}
     public synchronized byte updateConnected(int addend) {
         m_playersConnected += addend;
         return m_playersConnected;
